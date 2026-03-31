@@ -1,0 +1,2 @@
+# South-Central_Minzu_University_ICPC_Association_Trainning_Department
+中南民族大学 ICPC 协会训练部资料库。
