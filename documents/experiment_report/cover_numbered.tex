@@ -1,0 +1,306 @@
+% cover.tex
+% 中南民族大学学生实验报告封面组件
+%
+% 本文件不是主文件，不包含：
+%   \documentclass
+%   \begin{document}
+%   \end{document}
+%
+% 推荐目录：
+%   main.tex
+%   cover.tex
+%   cover_school_name.png
+%   cover_title.png
+%
+% main.tex 中使用：
+%   \input{cover.tex}
+%
+%   \begin{document}
+%   \MakeExperimentCover
+%   ...
+%   \end{document}
+
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{eso-pic}
+\RequirePackage{adjustbox}
+
+% ============================================================
+% 用户配置区：通常只需要修改这里
+% ============================================================
+
+\pgfkeys{
+    /cover/.is family,
+    /cover,
+    school-image/.store in=\CoverSchoolImage,
+    title-image/.store in=\CoverTitleImage,
+    serial/.store in=\CoverSerial,
+    department/.store in=\CoverDepartment,
+    major/.store in=\CoverMajor,
+    grade/.store in=\CoverGrade,
+    course/.store in=\CoverCourse,
+    student-id/.store in=\CoverStudentID,
+    student-name/.store in=\CoverStudentName,
+    instructor/.store in=\CoverInstructor,
+    year/.store in=\CoverYear,
+    month/.store in=\CoverMonth,
+    day/.store in=\CoverDay,
+    content-lift/.store in=\CoverContentLift,
+    serial-content-lift/.store in=\CoverSerialContentLift,
+    school-image-width/.store in=\CoverSchoolImageWidth,
+    title-image-width/.store in=\CoverTitleImageWidth,
+    line-width/.store in=\CoverLineWidth,
+    date-width/.store in=\CoverDateWidth
+}
+
+\newcommand{\CoverSetup}[1]{%
+    \pgfkeys{/cover,#1}%
+}
+
+% ------------------------------------------------------------
+% 只需在本配置块中填写内容
+% 所有个人、课程和日期信息默认为空
+% ------------------------------------------------------------
+
+\CoverSetup{
+    school-image={cover_school_name.png},
+    title-image={cover_title.png},
+    serial={},
+    department={},
+    major={},
+    grade={},
+    course={},
+    student-id={},
+    student-name={},
+    instructor={},
+    year={},
+    month={},
+    day={},
+    content-lift={4pt},
+    serial-content-lift={3pt},
+    school-image-width={306.1pt},
+    title-image-width={229pt},
+    line-width={202.4pt},
+    date-width={150pt}
+}
+
+% ============================================================
+% 高级版式区：一般不需要修改
+% ============================================================
+
+% 字号
+\newcommand{\CoverMainTextStyle}{%
+    \fontsize{15pt}{18pt}\selectfont
+}
+
+\newcommand{\CoverSerialTextStyle}{%
+    \fontsize{11pt}{13pt}\selectfont
+}
+
+% A4 页面水平中心
+\newcommand{\CoverPageCenterX}{298.75}
+
+% 左上角序号栏
+\newcommand{\CoverSerialLabelX}{42}
+\newcommand{\CoverSerialLineStartX}{80}
+\newcommand{\CoverSerialLineEndX}{145}
+\newcommand{\CoverSerialY}{50}
+\newcommand{\CoverSerialWidth}{65pt}
+
+% 学校名称图片和标题图片的纵向位置
+\newcommand{\CoverSchoolImageY}{169}
+\newcommand{\CoverTitleImageY}{293.5}
+
+% 主信息栏横向位置
+\newcommand{\CoverLabelX}{153}
+\newcommand{\CoverLineStartX}{228}
+\newcommand{\CoverLineEndX}{430.4}
+
+% 主信息栏纵向位置
+\newcommand{\CoverDepartmentY}{422.15}
+\newcommand{\CoverMajorY}{453.35}
+\newcommand{\CoverGradeY}{484.55}
+\newcommand{\CoverCourseY}{515.75}
+\newcommand{\CoverStudentIDY}{546.95}
+\newcommand{\CoverStudentNameY}{578.15}
+\newcommand{\CoverInstructorY}{609.35}
+
+% 日期位置
+\newcommand{\CoverDateY}{687}
+
+% ============================================================
+% 内部实现：无需修改
+% ============================================================
+
+% #1：字段名称
+% #2：字段内容
+% #3：距离页面顶部的位置，单位为 pt
+\newcommand{\CoverField}[3]{%
+    % 左侧字段名称
+    \node[
+        anchor=base west,
+        inner sep=0pt,
+        yshift=1.25pt
+    ] at (\CoverLabelX,-#3) {%
+        \CoverMainTextStyle #1%
+    };
+
+    % 固定长度下划线
+    \draw[
+        line width=0.72pt
+    ]
+        (\CoverLineStartX,-#3)
+        --
+        (\CoverLineEndX,-#3);
+
+    % 固定宽度内容区
+    % 内容变化不会改变下划线长度
+    \node[
+        anchor=base west,
+        inner sep=0pt,
+        yshift=\CoverContentLift
+    ] at (\CoverLineStartX,-#3) {%
+        \makebox[\CoverLineWidth][c]{%
+            \adjustbox{max width=\CoverLineWidth}{%
+                \CoverMainTextStyle #2%
+            }%
+        }%
+    };
+}
+
+\newcommand{\MakeExperimentCover}{%
+    \thispagestyle{empty}
+
+    \AddToShipoutPictureFG*{%
+        \AtPageUpperLeft{%
+            \begin{tikzpicture}[
+                overlay,
+                x=1pt,
+                y=1pt
+            ]
+
+                % 左上角序号栏
+                \node[
+                    anchor=base west,
+                    inner sep=0pt,
+                    yshift=1pt
+                ] at (
+                    \CoverSerialLabelX,
+                    -\CoverSerialY
+                ) {%
+                    \CoverSerialTextStyle 序号：%
+                };
+
+                \draw[
+                    line width=0.6pt
+                ]
+                    (
+                        \CoverSerialLineStartX,
+                        -\CoverSerialY
+                    )
+                    --
+                    (
+                        \CoverSerialLineEndX,
+                        -\CoverSerialY
+                    );
+
+                \node[
+                    anchor=base west,
+                    inner sep=0pt,
+                    yshift=\CoverSerialContentLift
+                ] at (
+                    \CoverSerialLineStartX,
+                    -\CoverSerialY
+                ) {%
+                    \makebox[\CoverSerialWidth][c]{%
+                        \CoverSerialTextStyle \CoverSerial
+                    }%
+                };
+
+                % 学校名称图片
+                \node[
+                    anchor=north,
+                    inner sep=0pt
+                ] at (
+                    \CoverPageCenterX,
+                    -\CoverSchoolImageY
+                ) {%
+                    \includegraphics[
+                        width=\CoverSchoolImageWidth
+                    ]{\CoverSchoolImage}%
+                };
+
+                % “学生实验报告”标题图片
+                \node[
+                    anchor=north,
+                    inner sep=0pt
+                ] at (
+                    \CoverPageCenterX,
+                    -\CoverTitleImageY
+                ) {%
+                    \includegraphics[
+                        width=\CoverTitleImageWidth
+                    ]{\CoverTitleImage}%
+                };
+
+                % 主信息栏
+                \CoverField
+                    {院\hspace{30pt}系：}
+                    {\CoverDepartment}
+                    {\CoverDepartmentY}
+
+                \CoverField
+                    {专\hspace{30pt}业：}
+                    {\CoverMajor}
+                    {\CoverMajorY}
+
+                \CoverField
+                    {年\hspace{30pt}级：}
+                    {\CoverGrade}
+                    {\CoverGradeY}
+
+                \CoverField
+                    {课程名称：}
+                    {\CoverCourse}
+                    {\CoverCourseY}
+
+                \CoverField
+                    {学\hspace{30pt}号：}
+                    {\CoverStudentID}
+                    {\CoverStudentIDY}
+
+                \CoverField
+                    {姓\hspace{30pt}名：}
+                    {\CoverStudentName}
+                    {\CoverStudentNameY}
+
+                \CoverField
+                    {指导教师：}
+                    {\CoverInstructor}
+                    {\CoverInstructorY}
+
+                % 日期
+                \node[
+                    anchor=base,
+                    inner sep=0pt
+                ] at (
+                    \CoverPageCenterX,
+                    -\CoverDateY
+                ) {%
+                    \CoverMainTextStyle
+                    \makebox[\CoverDateWidth][s]{%
+                        \CoverYear\ 年
+                        \hfill
+                        \CoverMonth\ 月
+                        \hfill
+                        \CoverDay\ 日
+                    }%
+                };
+
+            \end{tikzpicture}%
+        }%
+    }%
+
+    \null
+    \clearpage
+}
