@@ -1,24 +1,8 @@
-% cover.tex
-% 中南民族大学学生实验报告封面组件
+% cover_original.tex
+% 封面组件：在 main.tex 导言区使用 \input{cover_original.tex}
+% 正文中使用 \MakeExperimentCover 生成封面。
 %
-% 本文件不是主文件，不包含：
-%   \documentclass
-%   \begin{document}
-%   \end{document}
-%
-% 推荐目录：
-%   main.tex
-%   cover.tex
-%   cover_school_name.png
-%   cover_title.png
-%
-% main.tex 中使用：
-%   \input{cover.tex}
-%
-%   \begin{document}
-%   \MakeExperimentCover
-%   ...
-%   \end{document}
+% 本文件不包含 \documentclass、\begin{document}、\end{document}。
 
 \RequirePackage{graphicx}
 \RequirePackage{tikz}
@@ -26,95 +10,68 @@
 \RequirePackage{adjustbox}
 
 % ============================================================
-% 用户配置区：通常只需要修改这里
+% 用户配置区：只需修改这里
 % ============================================================
 
-\pgfkeys{
-    /cover/.is family,
-    /cover,
-    school-image/.store in=\CoverSchoolImage,
-    title-image/.store in=\CoverTitleImage,
+% 图片文件名
+\def\CoverSchoolImage{cover_school_name.png}
+\def\CoverTitleImage{cover_title.png}
 
-    department/.store in=\CoverDepartment,
-    major/.store in=\CoverMajor,
-    grade/.store in=\CoverGrade,
-    course/.store in=\CoverCourse,
-    student-id/.store in=\CoverStudentID,
-    student-name/.store in=\CoverStudentName,
-    instructor/.store in=\CoverInstructor,
+% 封面信息
+\def\CoverDepartment{}
+\def\CoverMajor{}
+\def\CoverGrade{}
+\def\CoverCourse{}
+\def\CoverStudentID{}
+\def\CoverStudentName{}
+\def\CoverInstructor{}
 
-    year/.store in=\CoverYear,
-    month/.store in=\CoverMonth,
-    day/.store in=\CoverDay,
+% 日期
+\def\CoverYear{}
+\def\CoverMonth{}
+\def\CoverDay{}
 
-    content-lift/.store in=\CoverContentLift,
-    school-image-width/.store in=\CoverSchoolImageWidth,
-    title-image-width/.store in=\CoverTitleImageWidth,
-    line-width/.store in=\CoverLineWidth,
-    date-width/.store in=\CoverDateWidth
-}
+% 填写内容相对下划线的上移距离
+% 数值越大，文字离下划线越远
+\def\CoverContentLift{4pt}
 
-\newcommand{\CoverSetup}[1]{%
-    \pgfkeys{/cover,#1}%
-}
-
-\CoverSetup{
-    school-image={cover_school_name.png},
-    title-image={cover_title.png},
-
-    department={},
-    major={},
-    grade={},
-    course={},
-    student-id={},
-    student-name={},
-    instructor={},
-
-    year={},
-    month={},
-    day={},
-
-    % 数值越大，填写内容离下划线越远
-    content-lift={4pt},
-
-    school-image-width={306.1pt},
-    title-image-width={229pt},
-    line-width={202.4pt},
-    date-width={150pt}
-}
+% 常用尺寸
+\def\CoverSchoolImageWidth{306.1pt}
+\def\CoverTitleImageWidth{229pt}
+\def\CoverLineWidth{202.4pt}
+\def\CoverDateWidth{150pt}
 
 % ============================================================
 % 高级版式区：一般不需要修改
 % ============================================================
 
-% 主信息栏字号
-\newcommand{\CoverMainTextStyle}{%
+\def\CoverMainTextStyle{%
     \fontsize{15pt}{18pt}\selectfont
 }
 
 % A4 页面水平中心
-\newcommand{\CoverPageCenterX}{298.75}
+\def\CoverPageCenterX{298.75}
 
 % 图片纵向位置
-\newcommand{\CoverSchoolImageY}{169}
-\newcommand{\CoverTitleImageY}{293.5}
+\def\CoverSchoolImageY{169}
+\def\CoverTitleImageY{293.5}
 
 % 主信息栏横向位置
-\newcommand{\CoverLabelX}{153}
-\newcommand{\CoverLineStartX}{228}
-\newcommand{\CoverLineEndX}{430.4}
+\def\CoverLabelX{153}
+\def\CoverLineStartX{228}
+\def\CoverLineEndX{430.4}
 
 % 主信息栏纵向位置
-\newcommand{\CoverDepartmentY}{422.15}
-\newcommand{\CoverMajorY}{453.35}
-\newcommand{\CoverGradeY}{484.55}
-\newcommand{\CoverCourseY}{515.75}
-\newcommand{\CoverStudentIDY}{546.95}
-\newcommand{\CoverStudentNameY}{578.15}
-\newcommand{\CoverInstructorY}{609.35}
+\def\CoverDepartmentY{422.15}
+\def\CoverMajorY{453.35}
+\def\CoverGradeY{484.55}
+\def\CoverCourseY{515.75}
+\def\CoverStudentIDY{546.95}
+\def\CoverStudentNameY{578.15}
+\def\CoverInstructorY{609.35}
 
 % 日期纵向位置
-\newcommand{\CoverDateY}{687}
+\def\CoverDateY{687}
 
 % ============================================================
 % 内部实现：无需修改
@@ -122,9 +79,8 @@
 
 % #1：字段名称
 % #2：字段内容
-% #3：距离页面顶部的位置，单位为 pt
-\newcommand{\CoverField}[3]{%
-    % 左侧字段名称
+% #3：距离页面顶部的位置，单位 pt
+\newcommand{\CoverOriginalField}[3]{%
     \node[
         anchor=base west,
         inner sep=0pt,
@@ -133,7 +89,6 @@
         \CoverMainTextStyle #1%
     };
 
-    % 固定长度下划线
     \draw[
         line width=0.72pt
     ]
@@ -141,8 +96,6 @@
         --
         (\CoverLineEndX,-#3);
 
-    % 固定宽度内容区
-    % 填写内容不会改变下划线长度
     \node[
         anchor=base west,
         inner sep=0pt,
@@ -194,37 +147,37 @@
                 };
 
                 % 主信息栏
-                \CoverField
+                \CoverOriginalField
                     {院\hspace{30pt}系：}
                     {\CoverDepartment}
                     {\CoverDepartmentY}
 
-                \CoverField
+                \CoverOriginalField
                     {专\hspace{30pt}业：}
                     {\CoverMajor}
                     {\CoverMajorY}
 
-                \CoverField
+                \CoverOriginalField
                     {年\hspace{30pt}级：}
                     {\CoverGrade}
                     {\CoverGradeY}
 
-                \CoverField
+                \CoverOriginalField
                     {课程名称：}
                     {\CoverCourse}
                     {\CoverCourseY}
 
-                \CoverField
+                \CoverOriginalField
                     {学\hspace{30pt}号：}
                     {\CoverStudentID}
                     {\CoverStudentIDY}
 
-                \CoverField
+                \CoverOriginalField
                     {姓\hspace{30pt}名：}
                     {\CoverStudentName}
                     {\CoverStudentNameY}
 
-                \CoverField
+                \CoverOriginalField
                     {指导教师：}
                     {\CoverInstructor}
                     {\CoverInstructorY}
