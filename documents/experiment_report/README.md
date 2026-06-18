@@ -5,7 +5,11 @@
 
 - 纯净版封面 `cover_original.tex`
 
+![纯净版封面](cover_original.png)
+
 - 带序号封面 `cover_numbered.tex`
+
+![带序号封面](cover_numbered.png)
 
 ### 实验报告内容
 
